@@ -1,4 +1,4 @@
-# git clone -b docker https://<REMOVED>@github.com/zq535228/JZBot.git
+# docker usage instructions (token removed)
 # docker build -t jzbot-back .
 # docker run -d -p 8003:80 --name jzbot-back jzbot-back
 # docker-compose down && docker-compose up -d
