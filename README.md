@@ -80,20 +80,11 @@ git clone https://github.com/3bDjrvHs50kiZIJb5/XiaoMiShu_Bot.git
 cd XiaoMiShu_Bot
 ```
 
-```bash
-# 拉取最新代码 手动操作
-git pull origin main
-
-
-
-```
-
 ### 2. 配置设置
 
-复制配置文件模板并修改配置：
+复制配置文件模板,并修改配置：
 
 ```bash
-# 复制一份appsettings_Sample.json为appsettings.json
 cp appsettings_Sample.json appsettings.json
 ```
 
@@ -104,7 +95,7 @@ cp appsettings_Sample.json appsettings.json
   "AllowedOrigins": [
     "http://服务器IP:5173"
   ],
-  "Domain": "http://your-domain.com",
+  "Domain": "http://服务器IP:8003",
   "TelegramBot": {
     "ApiKey": "your-telegram-bot-api-key",
     "BotName": "your_bot_name",
@@ -123,11 +114,10 @@ cp appsettings_Sample.json appsettings.json
 ```bash
 
 sudo su -
+
 # 下载并执行Docker官方安装脚本
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
-
-# 启动Docker服务
 sudo systemctl start docker
 sudo systemctl enable docker
 
