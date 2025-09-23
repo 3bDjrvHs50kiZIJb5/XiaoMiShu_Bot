@@ -119,9 +119,6 @@ sudo sh get-docker.sh
 sudo systemctl start docker
 sudo systemctl enable docker
 
-git clone https://github.com/3bDjrvHs50kiZIJb5/XiaoMiShu_Bot.git
-cd XiaoMiShu_Bot
-
 # 运行自动脚本,创建数据库和启动容器
 ./docker-auto.sh
 
