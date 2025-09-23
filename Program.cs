@@ -61,7 +61,7 @@ try
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
-            // .SetIsOriginAllowed(_ => true); // 临时添加，用于调试
+                // .SetIsOriginAllowed(_ => true); // 临时添加，用于调试
         });
     });
 
@@ -75,10 +75,7 @@ try
             .UseMonitorCommand(cmd =>
             {
                 var lowerCmd = cmd.CommandText.ToLower();
-                // if (!lowerCmd.Contains("select"))
-                // {
                 System.Console.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss")}] {cmd.CommandText}\r\n");
-                // }
             }) //监听SQL语句
             .UseAutoSyncStructure(true), //自动同步实体结构到数据库，只有CRUD时才会生成表。
         SchedulerExecuting = OnSchedulerExecuting //定时任务-自定义触发
@@ -135,6 +132,8 @@ try
                 break;
         }
     }
+
+    
 }
 catch (Exception ex)
 {

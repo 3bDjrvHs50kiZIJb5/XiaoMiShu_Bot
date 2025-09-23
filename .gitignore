@@ -4,6 +4,7 @@ bin/
 obj/
 *.dll
 *.exe
+keys/
 
 # Visual Studio 文件
 .vs/
@@ -55,3 +56,6 @@ appsettings.*.json
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.* 
 appsettings.json
+
+# 忽略本地 SQLite 数据库
+Sqlite.db
