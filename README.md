@@ -73,6 +73,9 @@ XiaoMiShu_Bot/
 ### 1. 克隆项目
 
 ```bash
+sudo apt-get update
+sudo apt-get install git
+
 git clone https://github.com/3bDjrvHs50kiZIJb5/XiaoMiShu_Bot.git
 cd XiaoMiShu_Bot
 ```
@@ -81,8 +84,7 @@ cd XiaoMiShu_Bot
 # 拉取最新代码 手动操作
 git pull origin main
 
-# 也可以自动拉取 执行 
-./docker-pull.sh
+
 
 ```
 
@@ -131,6 +133,9 @@ sudo systemctl enable docker
 
 # 运行自动脚本,创建数据库和启动容器
 ./docker-auto.sh
+
+# 以后升级就自动拉取 执行 
+./docker-pull.sh
 
 ```
 

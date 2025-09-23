@@ -9,6 +9,7 @@ using Serilog.Events;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.FileProviders;
 using back.TelegramBot.Services;
+using BootstrapBlazor.Components;
 
 // 配置 Serilog - 直接在代码中配置，支持环境特定配置
 var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
@@ -61,7 +62,7 @@ try
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
-                // .SetIsOriginAllowed(_ => true); // 临时添加，用于调试
+            // .SetIsOriginAllowed(_ => true); // 临时添加，用于调试
         });
     });
 
@@ -103,6 +104,48 @@ try
 
     var app = builder.Build();
 
+    UpdateSysTenantHost(app);
+
+    void UpdateSysTenantHost(WebApplication app)
+    {
+        try
+        {
+            // 直接使用 app.Configuration 读取配置，避免解析 DI 造成的 Blazor 相关服务构造
+            var domainConfig = app.Configuration["Domain"];
+            string parsedDomain = "";
+            if (!string.IsNullOrEmpty(domainConfig))
+            {
+                try
+                {
+                    // 仅提取域名部分，例如 https://jz.bot123.cc -> jz.bot123.cc
+                    parsedDomain = new Uri(domainConfig).Host;
+                }
+                catch (Exception ex)
+                {
+                    // 解析失败时记录警告日志
+                    Log.Warning(ex, "解析配置 Domain 失败，原始值: {DomainConfig}", domainConfig);
+                }
+            }
+
+            // 使用独立 FreeSql 实例执行一次性更新，避免在此时机解析 IFreeSql 触发 AdminContext 构造
+            using var freeSql = new FreeSqlBuilder()
+                .UseConnectionString(DataType.Sqlite, @"Data Source=Sqlite.db")
+                .UseAutoSyncStructure(false)
+                .Build();
+
+            SysTenant sysTenant = freeSql.Select<SysTenant>().ToOne();
+            sysTenant.Host = parsedDomain;
+
+            var affrows = freeSql.Update<SysTenant>().SetSource(sysTenant).ExecuteAffrows();
+            Log.Information("更新 SysTenant.Host 成功，影响行数: {Affrows}，Host: {Host}", affrows, parsedDomain);
+        }
+        catch (Exception ex)
+        {
+            // 不中断应用启动，但记录错误以便后续排查
+            Log.Error(ex, "启动时更新 SysTenant.Host 失败");
+        }
+    }
+
     // 使用正确的CORS策略名称
     app.UseCors("CorsPolicy");
 
@@ -133,7 +176,7 @@ try
         }
     }
 
-    
+
 }
 catch (Exception ex)
 {

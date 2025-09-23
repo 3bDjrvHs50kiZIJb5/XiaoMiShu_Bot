@@ -202,17 +202,6 @@ namespace back.TelegramBot.Services
                     {
                         await DeviceHelper.SendTempMessageAsync(device, setupMessage);
                     }
-                    //更新配置文件中的Domain 到数据表 SysTenant中
-                    // 从配置文件中获取Domain，并提取域名部分（如 jz.bot123.cc）
-                    var domainConfig = _configuration["Domain"];
-                    string domain = "";
-                    if (!string.IsNullOrEmpty(domainConfig))
-                    {
-                        try { domain = new Uri(domainConfig).Host; } catch { }
-                    }
-                    
-                    _fsql.Update<BootstrapBlazor.Components.SysTenant>().Set(a => a.Host, domain).ExecuteAffrows();
-                    LogOperation("更新域名",message.From.Id, message.Chat.Id, domain);
 
                     // 记录操作日志
                     LogOperation("完整初始化", message.From.Id, message.Chat.Id, "初始化成功");
