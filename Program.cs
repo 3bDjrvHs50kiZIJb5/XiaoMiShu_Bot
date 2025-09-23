@@ -58,7 +58,6 @@ try
             var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
             corsBuilder
                 .WithOrigins(allowedOrigins)
-                // .WithOrigins("https://f.jianyandashu.com")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
@@ -97,7 +96,6 @@ try
 
     // 注册 Telegram Bot 服务
     builder.Services.AddHostedService<TelegramBotService>();
-
     builder.Services.AddSingleton<MessageHandler>();
     builder.Services.AddSingleton<MemberManagementService>();
     builder.Services.AddSingleton<ChatManagementService>();
@@ -113,29 +111,6 @@ try
 
     // 配置静态文件服务
     app.UseStaticFiles();
-
-    //     // 配置 uploads 目录的静态文件访问和目录浏览
-    //     var uploadsPath = Path.Combine(AppContext.BaseDirectory, "uploads");
-
-    //     // 确保 uploads 目录存在
-    //     Directory.CreateDirectory(uploadsPath);
-
-    //     // 配置 uploads 目录的静态文件访问
-    //     app.UseStaticFiles(new StaticFileOptions
-    //     {
-    //         FileProvider = new PhysicalFileProvider(uploadsPath),
-    //         RequestPath = "/uploads"
-    //     });
-
-    //     // 配置 uploads 目录浏览功能
-    // #if DEBUG
-    //     app.UseDirectoryBrowser(new DirectoryBrowserOptions
-    //     {
-    //         FileProvider = new PhysicalFileProvider(uploadsPath),
-    //         RequestPath = "/uploads"
-    //     });
-    // #endif
-
     app.UseAntiforgery();
 
     app.UseBootstrapBlazor();
