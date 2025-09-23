@@ -77,6 +77,15 @@ git clone https://github.com/3bDjrvHs50kiZIJb5/XiaoMiShu_Bot.git
 cd XiaoMiShu_Bot
 ```
 
+```bash
+# 拉取最新代码 手动操作
+git pull origin main
+
+# 也可以自动拉取 执行 
+./docker-pull.sh
+
+```
+
 ### 2. 配置设置
 
 复制配置文件模板并修改配置：
