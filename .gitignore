@@ -1,0 +1,57 @@
+# .NET 构建输出
+# git rm --cached -r *.dll
+bin/
+obj/
+*.dll
+*.exe
+
+# Visual Studio 文件
+.vs/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.dbmdl
+*.jfm
+
+# Rider IDE 文件
+.idea/
+*.sln.iml
+
+# VS Code 文件
+.vscode/
+*.code-workspace
+
+# 日志文件
+Logs/
+*.log
+
+# 临时文件
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+Thumbs.db
+
+# 其他
+*.Cache
+ClientBin/
+[Ss]tyle[Cc]op.*
+~$*
+*~
+*.dbmdl
+*.dbproj.schemaview
+*.pfx
+*.publishsettings
+orleans.codegen.cs
+
+# 本地配置文件
+appsettings.local.json
+appsettings.*.json
+!appsettings.json
+!appsettings.Example.json
+
+# 测试结果
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.* 
+appsettings.json

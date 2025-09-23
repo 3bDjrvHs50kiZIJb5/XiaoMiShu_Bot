@@ -1,0 +1,39 @@
+# 版本控制
+.git
+.gitignore
+
+# IDE文件
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# 构建输出
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# 其他
+.DS_Store
+*.swp
+*.*~
+project.lock.json
+*.dll
+*.pdb
+*.user
+*.userosscache
+*.suo
+*.userprefs 

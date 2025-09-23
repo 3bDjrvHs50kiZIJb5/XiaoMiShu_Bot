@@ -1,0 +1,94 @@
+{
+	"commands": {
+		"time": {
+			"triggers": ["/time", "time", "时间"],
+			"handler": "HandleTimeCommandAsync",
+			"requireAdmin": false,
+			"description": "显示当前时间"
+		},
+		"otc": {
+			"triggers": ["OTC", "币价", "Z0"],
+			"handler": "HandleOTCExchangeRateCommandAsync",
+			"requireAdmin": false,
+			"description": "查询OTC汇率"
+		},
+		"id": {
+			"triggers": ["ID", "/id", "me"],
+			"handler": "HandleIdCommandAsync",
+			"requireAdmin": false,
+			"description": "显示用户ID信息"
+		},
+		"exchangeRate": {
+			"triggers": ["汇率", "/汇率"],
+			"handler": "HandleExchangeRateCommandAsync",
+			"requireAdmin": false,
+			"description": "查询群组汇率"
+		},
+		"start": {
+			"triggers": ["/start", "start"],
+			"handler": "HandleStartCommandAsync",
+			"requireAdmin": false,
+			"description": "启动机器人"
+		},
+		"help": {
+			"triggers": ["help", "/help", "帮助", "显示帮助"],
+			"handler": "HandleHelpCommandAsync",
+			"requireAdmin": false,
+			"description": "显示帮助信息"
+		},
+		"addAdmin": {
+			"triggers": ["/add_admin", "add_admin", "添加管理员", "新增操作人员", "添加操作员", "添加操作人", "添加操作人员", "新增操作员"],
+			"handler": "HandleAddAdminCommandAsync",
+			"requireAdmin": true,
+			"description": "添加管理员"
+		},
+		"removeAdmin": {
+			"triggers": ["/remove_admin", "移除管理员", "删除管理员", "移出管理员", "移出操作员", "删除操作员", "移除操作人员"],
+			"handler": "HandleRemoveAdminCommandAsync",
+			"requireAdmin": true,
+			"description": "移除管理员"
+		},
+		"adminList": {
+			"triggers": ["/admin_list", "管理员列表", "操作员列表", "操作人列表", "操作人员列表", "操作员", "操作人", "管理员", "/status", "status", "操作人员"],
+			"handler": "HandleAdminListCommandAsync",
+			"requireAdmin": true,
+			"description": "显示管理员列表"
+		},
+		"setExchangeRate": {
+			"triggers": ["/汇率", "设置汇率", "/设置汇率", "固定价格"],
+			"handler": "HandleSetExchangeRateCommandAsync",
+			"requireAdmin": true,
+			"description": "设置群组汇率"
+		},
+		"clearTodayOrder": {
+			"triggers": ["清除今日账单", "清理账单", "清除账单", "清理今日账单"],
+			"handler": "HandleClearTodayOrderCommandAsync",
+			"requireAdmin": true,
+			"description": "清除今日账单"
+		},
+		"feeRate": {
+			"triggers": ["费率", "/费率"],
+			"handler": "HandleFeeRateCommandAsync",
+			"requireAdmin": true,
+			"description": "查询费率"
+		},
+		"setFeeRate": {
+			"triggers": ["设置费率", "/设置费率"],
+			"handler": "HandleSetFeeRateCommandAsync",
+			"requireAdmin": true,
+			"description": "设置费率"
+		},
+		"orderAdd": {
+			"triggers": ["+", "入款", "上压"],
+			"handler": "HandleOrderAddCommandAsync",
+			"requireAdmin": true,
+			"description": "添加入款订单"
+		},
+		"orderDivide": {
+			"triggers": ["-", "下发", "下压", "出款"],
+			"handler": "HandleOrderDivideCommandAsync",
+			"requireAdmin": true,
+			"description": "添加下发订单"
+		}
+	}
+}

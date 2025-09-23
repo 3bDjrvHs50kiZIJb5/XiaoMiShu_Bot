@@ -1,0 +1,69 @@
+﻿@using BootstrapBlazor.Components
+
+@page "/"
+<div class="container mt-4">
+
+
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">使用说明</h4>
+
+
+
+        @if (!string.IsNullOrEmpty(htmlContent))
+        {
+            <CherryMarkdown @bind-Value="htmlContent" IsViewer="true" />
+        }
+        else
+        {
+            <div class="alert alert-danger">
+                <p>内容为空，正在加载...</p>
+            </div>
+        }
+    </div>
+
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">🚀 自动部署测试</h4>
+        <p>如果你能看到这条消息，说明自动部署功能运行正常！</p>
+        <hr>
+        <p>服务器时区: @TimeZoneInfo.Local.DisplayName</p>
+        <p class="mb-0">部署时间: @DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</p>
+    </div>
+
+    
+</div>
+
+@code {
+    private string htmlContent = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // 读取 README_BOT_USAGE.md 文件内容
+        try
+        {
+            // 获取文件的完整路径
+            var filePath = Path.Combine(AppContext.BaseDirectory, "README_BOT_USAGE.md");
+            System.Console.WriteLine($"文件路径: {filePath}");
+
+            // 检查文件是否存在
+            if (File.Exists(filePath))
+            {
+                // 读取文件内容并赋值给 htmlContent
+                htmlContent = await File.ReadAllTextAsync(filePath);
+                System.Console.WriteLine($"文件内容已读取，长度: {htmlContent.Length}");
+
+                // 强制刷新UI
+                StateHasChanged();
+            }
+            else
+            {
+                htmlContent = "README_BOT_USAGE.md 文件未找到";
+            }
+        }
+        catch (Exception ex)
+        {
+            // 如果读取失败，显示错误信息
+            htmlContent = $"读取文件时出错: {ex.Message}";
+            System.Console.WriteLine($"错误详情: {ex}");
+        }
+    }
+}

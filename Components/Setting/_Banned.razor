@@ -1,0 +1,62 @@
+@page "/Setting/Banned"
+@using back.Entities.JZ
+@using back.Entities.Setting
+@using System
+
+<PageTitle>违禁词</PageTitle>
+
+<AdminTable2 TItem="Banned" Context="item" PageSize="30" Title="违禁词"
+    OnQuery="OnQuery" InitQuery="InitQuery" OnEdit="OnEdit">
+
+    <TableHeader>
+        <th>违禁词</th>
+        <th>ChatId</th>
+        <th>CreatedTime</th>
+    </TableHeader>
+    <TableRow>
+        <td>@item.BannedWord</td>
+        <td>@item.ChatId</td>
+        <td>@item.CreatedTime?.ToString("yyyy-MM-dd HH:mm:ss")</td>
+    </TableRow>
+    <EditTemplate>
+        <div class="row">
+            <div class="form-group col-12">
+                <label class="form-label">违禁词</label>
+                <input @bind="item.BannedWord" type="text" class="form-control" placeholder="" maxlength="50">
+            </div>
+            <div class="form-group col-12">
+                <label class="form-label">ChatId</label>
+                <SelectEntity TItem="JzChat" TKey="long" @bind-Value="item.ChatId" DisplayText="e => e.Title" />
+            </div>
+        </div>
+    </EditTemplate> 
+</AdminTable2>
+
+
+@code {
+
+    [Inject] IAggregateRootRepository<Banned> repo { get; set; }
+
+    async Task InitQuery(AdminQueryInfo e)
+    {
+        var allJzChats = await repo.Orm.Select<JzChat>().ToListAsync();
+        e.Filters = new AdminFilterInfo[]
+        {
+            new AdminFilterInfo("ChatId", "ChatId", true, 12, 
+                string.Join(",", allJzChats.Select(a => a.Title)), 
+                string.Join(",", allJzChats.Select(a => a.Id))),
+        };
+        await Task.Yield();
+    }
+    void OnQuery(AdminQueryEventArgs<Banned> e)
+    {
+        e.Select.WhereIf(e.Filters[0].HasValue, a => e.Filters[0].Values<long>().Contains(a.ChatId))
+            .WhereIf(!e.SearchText.IsNull(), a => a.BannedWord.Contains(e.SearchText) || 
+                a.CreatedUserName.Contains(e.SearchText));
+    }
+
+    async Task OnEdit(Banned item)
+    {
+        await Task.Yield();
+    }
+}

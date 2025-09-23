@@ -1,0 +1,122 @@
+@page "/JZ/JzOrder"
+@using back.Entities.JZ
+@using back.Entities.Setting
+@using System
+
+<PageTitle>订单管理</PageTitle>
+
+<AdminTable2 TItem="JzOrder" Context="item" PageSize="20" Title="订单管理" DialogClassName="modal-lg" OnQuery="OnQuery"
+    InitQuery="InitQuery" OnEdit="OnEdit">
+
+    <TableHeader>
+        <th>订单编号</th>
+        <th>订单类型</th>
+        <th>USD汇率</th>
+        <th>订单金额USD</th>
+        <th>订单金额RMB</th>
+        <th>发起人ID</th>
+        <th>所属群组ID</th>
+        <th>创建时间</th>
+    </TableHeader>
+    <TableRow>
+        <td>@item.Id</td>
+        <td>@item.OrderType</td>
+        <td>@item.ExchangeRateUSD</td>
+        <td>@item.OrderAmountUSD</td>
+        <td>@item.OrderAmountRMB</td>
+        <td>@item.Member?.Username</td>
+        <td>@item.Chat?.Title</td>
+        <td>@item.CreatedTime?.ToString("yyyy-MM-dd HH:mm:ss")</td>
+    </TableRow>
+    <EditTemplate>
+        <div class="row">
+            <div class="form-group col-6">
+                <label class="form-label">订单编号</label>
+                <input @bind="item.OrderNo" type="text" class="form-control" placeholder="" maxlength="255">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">订单名称</label>
+                <input @bind="item.OrderName" type="text" class="form-control" placeholder="" maxlength="255">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">订单类型</label>
+                <SelectEnum TEnum="OrderType" @bind-Value="item.OrderType" />
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">USD汇率</label>
+                <input @bind="item.ExchangeRateUSD" type="number" class="form-control" placeholder="">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">订单金额USD</label>
+                <input @bind="item.OrderAmountUSD" type="number" class="form-control" placeholder="">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">订单金额RMB</label>
+                <input @bind="item.OrderAmountRMB" type="number" class="form-control" placeholder="">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">发起人ID</label>
+                <SelectEntity TItem="Member" TKey="long" @bind-Value="item.MemberId" DisplayText="e => e.Username" />
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">所属聊天ID</label>
+                <SelectEntity TItem="JzChat" TKey="long" @bind-Value="item.ChatId" DisplayText="e => e.Title" />
+            </div>
+        </div>
+    </EditTemplate>
+</AdminTable2>
+
+
+@code {
+
+    [Inject] IAggregateRootRepository<JzOrder> repo { get; set; }
+    [Inject] AdminContext adminContext { get; set; }
+
+    async Task InitQuery(AdminQueryInfo e)
+    {
+        var allMembers = await repo.Orm.Select<Member>().ToListAsync();
+        var allJzChats = await repo.Orm.Select<JzChat>().ToListAsync();
+        e.Filters = new AdminFilterInfo[]
+        {
+new AdminFilterInfo("订单类型", "OrderType", "入款,下发", "0,1"),
+new AdminFilterInfo("发起人ID", "MemberId", false, 12,
+string.Join(",", allMembers.Select(a => a.Username)),
+string.Join(",", allMembers.Select(a => a.Id))),
+new AdminFilterInfo("所属群组", "ChatId", false, 12,
+string.Join(",", allJzChats.Select(a => a.Title)),
+string.Join(",", allJzChats.Select(a => a.Id))),
+        };
+        await Task.Yield();
+    }
+
+
+    void OnQuery(AdminQueryEventArgs<JzOrder> e)
+    {
+        if (adminContext.User.Username == "admin")
+        {
+            e.Select.Include(a => a.Member).Include(a => a.Chat)
+            .WhereIf(e.Filters[0].HasValue, a => a.OrderType == e.Filters[0].Value<OrderType>())
+            .WhereIf(e.Filters[1].HasValue, a => e.Filters[1].Values<long>().Contains(a.MemberId))
+            .WhereIf(e.Filters[2].HasValue, a => e.Filters[2].Values<long>().Contains(a.ChatId))
+            .WhereIf(!e.SearchText.IsNull(), a => a.OrderNo.Contains(e.SearchText) ||
+            a.OrderName.Contains(e.SearchText) ||
+            a.CreatedUserName.Contains(e.SearchText));
+        }
+        else
+        {
+            e.Select.Include(a => a.Member).Include(a => a.Chat)
+            .Where(a => a.Chat.Members.Any(b => b.Id == adminContext.User.Id))
+            .WhereIf(e.Filters[0].HasValue, a => a.OrderType == e.Filters[0].Value<OrderType>())
+            .WhereIf(e.Filters[1].HasValue, a => e.Filters[1].Values<long>().Contains(a.MemberId))
+            .WhereIf(e.Filters[2].HasValue, a => e.Filters[2].Values<long>().Contains(a.ChatId))
+            .WhereIf(!e.SearchText.IsNull(), a => a.OrderNo.Contains(e.SearchText) ||
+            a.OrderName.Contains(e.SearchText) ||
+            a.CreatedUserName.Contains(e.SearchText));
+        }
+    }
+
+    async Task OnEdit(JzOrder item)
+    {
+        await Task.Yield();
+    }
+}

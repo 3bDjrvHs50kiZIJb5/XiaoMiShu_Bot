@@ -1,0 +1,169 @@
+@page "/Setting/Member"
+@using back.Entities.JZ
+@using back.Entities.Setting
+@using BootstrapBlazor.Components
+@using System
+
+<PageTitle>管理员</PageTitle>
+
+<AdminTable2 TItem="Member" Context="item" PageSize="20" Title="管理员" DialogClassName="modal-lg" TableTd99Width="230"
+    OnQuery="OnQuery" InitQuery="InitQuery" OnEdit="OnEdit">
+
+    <TableHeader>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Nickname</th>
+        <th>Password</th>
+        <th>IsEnabled</th>
+        <th>Description</th>
+        <th>IsSystem</th>
+        <th>表单ID</th>
+        <th>是否为付费用户</th>
+        <th>创建时间</th>
+    </TableHeader>
+    <TableRow>
+        <td>@item.Id</td>
+        <td>@item.Username</td>
+        <td>@item.Nickname</td>
+        <td>@item.Password</td>
+        <td>@item.IsEnabled</td>
+        <td>@item.Description</td>
+        <td>@item.IsSystem</td>
+        <td>@item.FormId</td>
+        <td>@item.IsPremium</td>
+        <td>@item.CreatedTime?.ToString("yyyy-MM-dd HH:mm:ss")</td>
+    </TableRow>
+    <TableTd99>
+        <button @onclick="e => BeginAllocJzChats(item)" type="button" class="mr-2 btn btn-light btn-xs"><i
+                class="fa fa-user-secret"></i>分配聊天管理</button>
+    </TableTd99>
+    <EditTemplate>
+        <div class="row">
+            <div class="form-group col-6">
+                <label class="form-label">Username</label>
+                <input @bind="item.Username" type="text" class="form-control" placeholder="" maxlength="50">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">Nickname</label>
+                <input @bind="item.Nickname" type="text" class="form-control" placeholder="" maxlength="50">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">Password</label>
+                <input @bind="item.Password" type="text" class="form-control" placeholder="" maxlength="50">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">IsEnabled</label>
+                <Switch @bind-Value="item.IsEnabled" OnColor="Color.Success" />
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">登陆时间</label>
+                @* <DateTimePicker TValue="DateTime" @bind-Value="item.LoginTime" /> *@
+                <input @bind="item.LoginTime" type="datetime-local" class="form-control">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">OrgId</label>
+                <SelectEntity TItem="SysOrg" TKey="long" @bind-Value="item.OrgId" DisplayText="e => e.Label" />
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">Description</label>
+                <textarea @bind="item.Description" class="form-control" placeholder="" maxlength="500"></textarea>
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">IsSystem</label>
+                <Switch @bind-Value="item.IsSystem" OnColor="Color.Success" />
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">表单ID</label>
+                <input @bind="item.FormId" type="number" class="form-control" placeholder="">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">用户名</label>
+                <input @bind="item.FirstName" type="text" class="form-control" placeholder="" maxlength="255">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">用户名</label>
+                <input @bind="item.LastName" type="text" class="form-control" placeholder="" maxlength="255">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">语言代码</label>
+                <input @bind="item.LanguageCode" type="text" class="form-control" placeholder="" maxlength="255">
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">是否为机器人</label>
+                <Switch @bind-Value="item.IsBot" OnColor="Color.Success" />
+            </div>
+            <div class="form-group col-6">
+                <label class="form-label">是否为付费用户</label>
+                <Switch @bind-Value="item.IsPremium" OnColor="Color.Success" />
+            </div>
+        </div>
+    </EditTemplate>
+</AdminTable2>
+
+
+<AllocTable2 TItem="Member" TChild="JzChat" @bind-Item="@allocItemJzChats" ChildProperty="JzChats"
+    Title="@($"【分配聊天管理】{allocItemJzChats?.Username}")">
+    <TableTd1>@context.Title</TableTd1>
+</AllocTable2>
+
+@code {
+
+    [Inject] IAggregateRootRepository<Member> repo { get; set; }
+    [Inject] AdminContext adminContext { get; set; }
+    async Task InitQuery(AdminQueryInfo e)
+    {
+        var allSysOrgs = await repo.Orm.Select<SysOrg>().ToListAsync();
+        var allJzChats = await repo.Orm.Select<JzChat>().ToListAsync();
+        e.Filters = new AdminFilterInfo[]
+        {
+new AdminFilterInfo("OrgId", "OrgId", false, 12,
+string.Join(",", allSysOrgs.Select(a => a.Label)),
+string.Join(",", allSysOrgs.Select(a => a.Id))),
+new AdminFilterInfo("聊天管理", "JzChats", false, 12,
+string.Join(",", allJzChats.Select(a => a.Title)),
+string.Join(",", allJzChats.Select(a => a.Id))),
+        };
+        await Task.Yield();
+    }
+    void OnQuery(AdminQueryEventArgs<Member> e)
+    {
+        if (adminContext.User.Username == "admin")
+        {
+            e.Select
+            .WhereIf(e.Filters[0].HasValue, a => e.Filters[0].Values<long>().Contains(a.OrgId))
+            .WhereIf(e.Filters[1].HasValue, a => a.JzChats.Any(b => e.Filters[1].Values<long>().Contains(b.Id)))
+            .WhereIf(!e.SearchText.IsNull(), a => a.Username.Contains(e.SearchText) ||
+            a.Nickname.Contains(e.SearchText) ||
+            a.Password.Contains(e.SearchText) ||
+            a.Description.Contains(e.SearchText) ||
+            a.FirstName.Contains(e.SearchText) ||
+            a.LastName.Contains(e.SearchText) ||
+            a.LanguageCode.Contains(e.SearchText) ||
+            a.CreatedUserName.Contains(e.SearchText));
+        }
+        else
+        {
+            e.Select
+            .Where(a => a.Id == adminContext.User.Id)
+            .WhereIf(e.Filters[0].HasValue, a => e.Filters[0].Values<long>().Contains(a.OrgId))
+            .WhereIf(e.Filters[1].HasValue, a => a.JzChats.Any(b => e.Filters[1].Values<long>().Contains(b.Id)))
+            .WhereIf(!e.SearchText.IsNull(), a => a.Username.Contains(e.SearchText) ||
+            a.Nickname.Contains(e.SearchText) ||
+            a.Password.Contains(e.SearchText) ||
+            a.Description.Contains(e.SearchText) ||
+            a.FirstName.Contains(e.SearchText) ||
+            a.LastName.Contains(e.SearchText) ||
+            a.LanguageCode.Contains(e.SearchText) ||
+            a.CreatedUserName.Contains(e.SearchText));
+        }
+    }
+
+    async Task OnEdit(Member item)
+    {
+        await Task.Yield();
+    }
+
+    Member allocItemJzChats;
+    [AdminButton("alloc_jzchats")]
+    void BeginAllocJzChats(Member item) => allocItemJzChats = item;
+}

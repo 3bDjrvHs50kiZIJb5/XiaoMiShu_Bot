@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<NoWarn>1701;1702;CS1573;CS8600;CS8601;CS8602;CS8603;CS8604;CS8605;CS8618;CS8619;CS8620;CS8622;CS8625;CS8629;CS8714;CS1591</NoWarn>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="AdminBlazor" Version="2.3.2" />
+		<PackageReference Include="BootstrapBlazor.CherryMarkdown" Version="9.0.0" />
+		<PackageReference Include="FreeSql.Provider.Sqlite" Version="3.5.203" />
+		<PackageReference Include="FreeSql.Provider.MySqlConnector" Version="3.5.203" />
+		<PackageReference Include="Rougamo.Fody" Version="5.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
+		<PackageReference Include="Serilog" Version="4.2.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+		<PackageReference Include="TelegramBotBase" Version="6.6.3" />
+		<PackageReference Include="Flurl.Http" Version="4.0.1" />
+		<PackageReference Include="Flurl.Http.Newtonsoft" Version="0.9.1" />
+		
+		<!-- 添加 MSTest 相关包用于测试 -->
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+	</ItemGroup>
+	
+	<!-- 确保README_BOT_USAGE.md文件被复制到输出目录 -->
+	<ItemGroup>
+		<Content Include="README_BOT_USAGE.md">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+</Project>
