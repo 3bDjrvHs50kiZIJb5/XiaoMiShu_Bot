@@ -59,3 +59,6 @@ appsettings.json
 
 # 忽略本地 SQLite 数据库
 Sqlite.db
+
+# 忽略 SpecStory 记录
+.specstory/
