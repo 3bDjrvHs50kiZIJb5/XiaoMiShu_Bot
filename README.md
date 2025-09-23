@@ -82,10 +82,11 @@ cd XiaoMiShu_Bot
 复制配置文件模板并修改配置：
 
 ```bash
+# 复制一份appsettings_Sample.json为appsettings.json
 cp appsettings_Sample.json appsettings.json
 ```
 
-编辑 `appsettings.json` 文件：
+然后编辑 `appsettings.json` 文件：
 
 ```json
 {
