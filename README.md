@@ -11,6 +11,9 @@
 - 📊 数据统计和报表生成
 - 🔧 基于 Blazor 的管理后台
 
+记账机器人演示: @Numct_Bot
+联系开发者 Telegram: @yoyoyo241026
+
 ## ✨ 主要功能
 
 ### 🤖 机器人功能
@@ -122,11 +125,28 @@ sudo systemctl start docker
 sudo systemctl enable docker
 
 # 运行自动脚本,创建数据库和启动容器
-./docker-auto.sh
+sudo ./docker-auto.sh
 
 # 以后升级就自动拉取 执行 
-./docker-pull.sh
+sudo ./docker-pull.sh
 
+# 查看log日志
+sudo docker logs -f jzbot-back
+
+```
+
+# 访问管理后台
+http://服务器IP:8003
+
+> 管理员账号: admin 密码: admin
+
+```
+# 添加菜单
+JZ/JzChat	
+JZ/JzOrder	
+Setting/Banned	
+Setting/Member	
+Setting/Messages
 ```
 
 
